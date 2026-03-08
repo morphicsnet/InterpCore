@@ -1,0 +1,33 @@
+{
+  "name": "gmf",
+  "description": "GMF block registers (placeholder)",
+  "block_base": "0x00000000",
+  "registers": [
+    {
+      "name": "CONTROL",
+      "offset": "0x000",
+      "fields": [
+        { "name": "enable", "bits": "0", "desc": "Enable block" },
+        { "name": "soft_reset", "bits": "1", "desc": "Soft reset" },
+        { "name": "reserved", "bits": "31:2", "desc": "Reserved" }
+      ]
+    },
+    {
+      "name": "STATUS",
+      "offset": "0x004",
+      "fields": [
+        { "name": "busy", "bits": "0", "desc": "Busy" },
+        { "name": "error", "bits": "1", "desc": "Error" },
+        { "name": "reserved", "bits": "31:2", "desc": "Reserved" }
+      ]
+    },
+    {
+      "name": "COUNTERS",
+      "offset": "0x100",
+      "count": 2,
+      "fields": [
+        { "name": "value", "bits": "31:0", "desc": "Counter value" }
+      ]
+    }
+  ]
+}
