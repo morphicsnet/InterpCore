@@ -1,5 +1,8 @@
 # NSI-CP FPGA Bring-up Plan
 
+Scope: Staged FPGA bring-up plan for NSI-CP integration.
+Audience: FPGA and RTL engineers.
+
 This plan outlines a staged bring-up to de-risk integration:
 
 1) Synthesis-only wrappers

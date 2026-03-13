@@ -1,5 +1,8 @@
 # NSI-CP RTL Scaffolding
 
+Scope: RTL module layout, conventions, and integration guidance for NSI-CP scaffolding.
+Audience: RTL and FPGA engineers.
+
 This repository contains compile-ready module stubs and common packages to bootstrap RTL development and FPGA bring-up.
 
 Folder layout:
