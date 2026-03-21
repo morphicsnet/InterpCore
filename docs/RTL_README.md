@@ -1,38 +1,50 @@
-# NSI-CP RTL Scaffolding
+# InterpCore RTL Bring-Up Guide
+> Navigable map for the NSI-CP RTL scaffolding: layout, conventions, simulation entry points, and integration hooks.
 
-Scope: RTL module layout, conventions, and integration guidance for NSI-CP scaffolding.
-Audience: RTL and FPGA engineers.
+## Choose your path
+- I want the repo-level story: [InterpCore root](../README.md)
+- I want simulation first: [sim/README.md](../sim/README.md)
+- I want FPGA planning: [FPGA_BRINGUP.md](FPGA_BRINGUP.md)
 
-This repository contains compile-ready module stubs and common packages to bootstrap RTL development and FPGA bring-up.
+## What lives where
+- `hw/rtl/common`: shared packages and interfaces
+- `hw/rtl/top`: top-level integration shells
+- `hw/rtl/host`: host endpoint and DMA stubs
+- `hw/rtl/noc`: NoC router and bridges
+- `hw/rtl/gse`, `hw/rtl/gmf`, `hw/rtl/pta`, `hw/rtl/fsm`, `hw/rtl/mc`, `hw/rtl/clkreset`: functional blocks and glue
+- `hw/regs`: HJSON register-map placeholders
+- `fpga/`: board wrappers and constraints
+- `sim/`: simulation testbenches and smoke benches
 
-Folder layout:
-- `hw/rtl/common` — shared packages and interfaces ([axi4l_pkg.sv](../hw/rtl/common/axi4l_pkg.sv), [axi4s_pkg.sv](../hw/rtl/common/axi4s_pkg.sv), [noc_pkg.sv](../hw/rtl/common/noc_pkg.sv), [util_pkg.sv](../hw/rtl/common/util_pkg.sv))
-- `hw/rtl/top` — top-level integration ([nsi_cp_top.sv](../hw/rtl/top/nsi_cp_top.sv))
-- `hw/rtl/host` — host endpoint and DMA stubs
-- `hw/rtl/noc` — NoC router and bridges
-- `hw/rtl/gse`, `hw/rtl/gmf`, `hw/rtl/pta`, `hw/rtl/fsm`, `hw/rtl/mc`, `hw/rtl/clkreset`
-- `hw/regs` — HJSON placeholders for register maps
-- `fpga` — FPGA wrappers and constraints
-- `sim` — simulation testbenches
-- `docs` — developer documentation
-
-Coding standards:
+## Conventions
 - SystemVerilog-2017
-- Use packages for shared typedefs/parameters (no magic widths)
-- Active-low resets named `rst_n`/`rstn_*`
-- AXI4-Lite/AXI4-Stream conventions via interfaces
-- Keep CDC explicit; use `reset_sync.sv` synchronizers
+- shared typedefs and parameters through packages, not magic widths
+- active-low resets named `rst_n` / `rstn_*`
+- AXI4-Lite and AXI4-Stream conventions through interfaces
+- CDC made explicit; do not bury it in convenience logic
 
-Lint recommendations:
-- Use Verilator + commercial lint (Questa Lint/SpyGlass) with SV-2017
-- Enable unused/width mismatch warnings early
+## Bring-up workflow
+1. start with a small sim target in [`sim/`](../sim/README.md)
+2. validate shared packages and interfaces compile cleanly
+3. add or wire a specific block
+4. only then widen to top-level or FPGA wrappers
 
-Adding registers:
-- Author HJSON in `hw/regs/*.hjson` (JSON-compatible)
-- Implement block CSR in RTL or use auto-generated regfiles
-- `mc_axi_regs.sv` contains a minimal AXI-Lite slave with readable/writable flops for early tests
+## Adding registers
+- author HJSON in `hw/regs/*.hjson`
+- implement block CSR directly in RTL or through generated regfiles later
+- use `mc_axi_regs.sv` as the early, low-ceremony reference point
 
-Adding a NoC endpoint:
-- For control: implement an AXI4-Lite bridge ([noc_bridge_axi4l.sv](../hw/rtl/noc/noc_bridge_axi4l.sv)) on VC0
-- For streams: implement AXI4S packetizer ([noc_bridge_axi4s.sv](../hw/rtl/noc/noc_bridge_axi4s.sv)) on VC1/VC2/VC3
-- Connect to [noc_router.sv](../hw/rtl/noc/noc_router.sv) ports and establish routing/VC policy
+## Adding a NoC endpoint
+- control path: wire an AXI4-Lite bridge on VC0
+- stream path: wire an AXI4S packetizer on VC1/VC2/VC3
+- connect through `noc_router.sv` and declare routing/VC policy early
+
+## Lint and simulation guidance
+- use Verilator plus commercial lint if available
+- enable width/unused warnings early
+- keep placeholder modules compile-ready even before they are functionally deep
+
+## Go next
+- Root guide: [InterpCore](../README.md)
+- Simulation lab: [sim README](../sim/README.md)
+- FPGA notes: [FPGA_BRINGUP.md](FPGA_BRINGUP.md)
