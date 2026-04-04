@@ -1,70 +1,78 @@
-# InterpCore
-> NSI-CP runtime substrate for graph streaming, traversal, simulation, RTL bring-up, and HIF export.
+# interpchip
 
-![Status](https://img.shields.io/badge/status-early%20but%20concrete-0369A1) ![Stack](https://img.shields.io/badge/stack-Rust%20%2B%20RTL-111827) ![Focus](https://img.shields.io/badge/focus-NSI--CP%20simulation-0284C7) ![Output](https://img.shields.io/badge/output-HIF%20JSON-0F766E)
+interpchip is a Rust and RTL workspace for graph streaming, hyperedge storage, traversal scoring, and HIF export. It is best understood as an early execution substrate for hypergraph-oriented interpretability workloads.
 
-InterpCore exists because higher-order interpretability needs an execution substrate once the objects of interest are streams, hyperedges, traversals, and exportable graphs rather than isolated scalar features.
+## Core Objects
 
-![InterpCore pipeline](docs/assets/readme/interpcore-pipeline.svg)
+The software path is built around:
 
-## 60-second demo
+- streamed feature activations
+- graph-memory-fabric node and hyperedge storage
+- candidate traversal and scoring
+- frequent-subgraph pattern counting
+- HIF JSON export
+
+## Current Status
+
+### Real Today
+
+- concrete Rust types for graph memory fabric and HIF export
+- a runnable software demo path
+- profile and configuration handling
+- traversal and graph-streaming scaffolding sufficient for early validation
+
+### Still Placeholder or Synthetic
+
+- the main demo uses `DummyOracle`
+- the main demo feeds simulated activations
+- frequent-subgraph canonicalization is still a placeholder sort
+- much of `hw/` and `fpga/` is bring-up scaffolding rather than complete hardware
+
+Representative paths:
+
+- `src/main.rs`
+- `src/engines/fsm.rs`
+- `hw/rtl/top/nsi_cp_top.sv`
+- `hw/rtl/host/pcie_cxl_endpoint.sv`
+- `fpga/agilex/top_agilex.sv`
+- `fpga/versax/top_versax.sv`
+
+## Repository Map
+
+- `src/`: Rust simulation and export path
+- `sim/`: simulation support
+- `hw/`: RTL surfaces
+- `fpga/`: board wrappers and constraints
+- `docs/`: hardware and bring-up notes
+
+## Quickstart
+
 ```bash
 cargo build
 cargo run
 ```
 
-Expected behavior:
-- prints readiness information
-- processes synthetic activations
-- discovers at least one hyperedge through the current dummy-oracle path
-- prints a minimal HIF JSON export
+Current demo behavior:
 
-## Choose your path
-- I want the software substrate: [60-second demo](#60-second-demo) · [Profiles and configuration](#profiles-and-configuration)
-- I want the hardware path: [Repository map](#repository-map) · [RTL bring-up](docs/RTL_README.md)
-- I want simulations: [simulation README](sim/README.md)
-- I want to contribute: [Status](#status) · [Testing](#testing)
-
-## Why this exists
-Mechanism discovery becomes a systems problem surprisingly fast. InterpCore is the repo where graph streaming, traversal acceleration, subgraph mining, memory fabric ideas, and HIF export can be reasoned about together.
-
-## What this is / isn't
-✅ Is: a single-crate Rust simulation plus RTL/FPGA scaffolding for the NSI-CP story  
-✅ Is: a substrate for testing how hypergraph-oriented interpretability might run  
-❌ Isn't: a finished silicon program or production engine  
-❌ Isn't: a polished end-user interpretability app
-
-## Repository map
-- `src/`: Rust simulation of GSE, PTA, FSM, GMF, and HIF export
-- `sim/`: simulation scaffolding and smoke testbenches
-- `hw/`: RTL stubs and integration surfaces
-- `fpga/`: board wrappers and constraints
-- `docs/`: bring-up and hardware notes
-
-## Profiles and configuration
-Profile selection order:
-1. CLI flag: `--profile openai|anthropic`
-2. env var: `NSICP_PROFILE=openai|anthropic`
-3. cargo features: `--features openai` or `--features anthropic`
-4. default: `anthropic`
-
-Useful overrides:
-- `NSICP_STII_THRESHOLD`
-- `NSICP_MAX_K`
-- `NSICP_PTA_SAMPLE_COUNT`
-- `NSICP_ACT_CAP`
-- `NSICP_CAND_CAP`
+- initialize the software substrate
+- process simulated activations
+- discover at least one hyperedge through the current demo path
+- print a minimal HIF JSON export
 
 ## Testing
+
 ```bash
 cargo test
 ```
-Simulation and bring-up docs:
+
+See also:
+
 - [sim/README.md](sim/README.md)
 - [docs/RTL_README.md](docs/RTL_README.md)
 - [docs/FPGA_BRINGUP.md](docs/FPGA_BRINGUP.md)
 
 ## Status
-- The software simulation is the most concrete surface.
-- The RTL tree is scaffolding for bring-up and integration planning.
-- HIF export is intentionally minimal and oriented toward early validation.
+
+- The Rust software path is the most concrete surface.
+- The hardware tree is still explicitly incomplete.
+- This repo should be treated as a substrate under construction, not a finished silicon program.

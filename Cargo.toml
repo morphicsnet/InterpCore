@@ -20,3 +20,4 @@ thiserror = "1.0"
 num_cpus = "1.16"
 rand = "0.8"
 rand_chacha = "0.3"
+clap = { version = "4.0", features = ["derive"] }
